@@ -44,7 +44,7 @@
         <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
         <PackageReference Include="Polly" Version="8.6.5" />
         <PackageReference Include="Soenneker.Extensions.Configuration" Version="4.0.745" />
-        <PackageReference Include="Soenneker.Utils.Directory" Version="4.0.749" />
+        <PackageReference Include="Soenneker.Utils.Directory" Version="4.0.750" />
         <PackageReference Include="Soenneker.Utils.Process" Version="4.0.1367" />
     </ItemGroup>
 </Project>
