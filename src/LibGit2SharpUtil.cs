@@ -60,9 +60,9 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     // TODO: Probably should break these 'bulk' operations into a separate class
 
-    public void PullAllGitRepositories(string directory)
+    public async ValueTask PullAllGitRepositories(string directory, CancellationToken cancellationToken = default)
     {
-        List<string> allRepos = GetAllGitRepositoriesRecursively(directory);
+        List<string> allRepos = await GetAllGitRepositoriesRecursively(directory, cancellationToken).NoSync();
 
         for (var i = 0; i < allRepos.Count; i++)
         {
@@ -71,9 +71,9 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         }
     }
 
-    public void FetchAllGitRepositories(string directory)
+    public async ValueTask FetchAllGitRepositories(string directory, CancellationToken cancellationToken = default)
     {
-        List<string> allRepos = GetAllGitRepositoriesRecursively(directory);
+        List<string> allRepos = await GetAllGitRepositoriesRecursively(directory, cancellationToken).NoSync();
 
         for (var i = 0; i < allRepos.Count; i++)
         {
@@ -82,9 +82,9 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         }
     }
 
-    public void SwitchAllGitRepositoriesToRemoteBranch(string directory)
+    public async ValueTask SwitchAllGitRepositoriesToRemoteBranch(string directory, CancellationToken cancellationToken = default)
     {
-        List<string> allRepos = GetAllGitRepositoriesRecursively(directory);
+        List<string> allRepos = await GetAllGitRepositoriesRecursively(directory, cancellationToken).NoSync();
 
         for (var i = 0; i < allRepos.Count; i++)
         {
@@ -93,9 +93,9 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         }
     }
 
-    public void CommitAllRepositories(string directory, string commitMessage)
+    public async ValueTask CommitAllRepositories(string directory, string commitMessage, CancellationToken cancellationToken = default)
     {
-        List<string> allRepos = GetAllGitRepositoriesRecursively(directory);
+        List<string> allRepos = await GetAllGitRepositoriesRecursively(directory, cancellationToken).NoSync();
 
         for (var i = 0; i < allRepos.Count; i++)
         {
@@ -106,7 +106,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     public async ValueTask PushAllRepositories(string directory, string token, CancellationToken cancellationToken = default)
     {
-        List<string> allRepos = GetAllGitRepositoriesRecursively(directory);
+        List<string> allRepos = await GetAllGitRepositoriesRecursively(directory, cancellationToken).NoSync();
 
         for (var i = 0; i < allRepos.Count; i++)
         {
@@ -357,13 +357,14 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         }
     }
 
-    public List<string> GetAllGitRepositoriesRecursively(string directory)
+    public async ValueTask<List<string>> GetAllGitRepositoriesRecursively(string directory, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Getting all git repositories recursively in directory ({directory})...", directory);
 
         var finalDirectories = new List<string>();
 
-        List<string> orderedDirectories = DirectoryUtil.GetDirectoriesOrderedByLevels(directory);
+        List<string> orderedDirectories = await DirectoryUtil.GetDirectoriesOrderedByLevels(directory, cancellationToken).NoSync();
+
         orderedDirectories.RemoveAll(c => c.Contains(Path.DirectorySeparatorChar + ".git"));
         var index = 0;
 
@@ -384,11 +385,11 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         return finalDirectories;
     }
 
-    public List<string> GetAllDirtyRepositories(string directory)
+    public async ValueTask<List<string>> GetAllDirtyRepositories(string directory, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Getting all 'dirty' repositories in directory ({directory})...", directory);
 
-        List<string> allRepos = GetAllGitRepositoriesRecursively(directory);
+        List<string> allRepos = await GetAllGitRepositoriesRecursively(directory, cancellationToken).NoSync();
 
         var result = new List<string>();
 

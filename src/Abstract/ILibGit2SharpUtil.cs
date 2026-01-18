@@ -23,22 +23,22 @@ public interface ILibGit2SharpUtil
     /// <summary>
     /// Pulls the latest changes for all Git repositories recursively found in the specified directory.
     /// </summary>
-    void PullAllGitRepositories(string directory);
+    ValueTask PullAllGitRepositories(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Fetches all remote changes for all Git repositories recursively found in the specified directory.
     /// </summary>
-    void FetchAllGitRepositories(string directory);
+    ValueTask FetchAllGitRepositories(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Switches all repositories in the specified directory to the tracked remote branch (main).
     /// </summary>
-    void SwitchAllGitRepositoriesToRemoteBranch(string directory);
+    ValueTask SwitchAllGitRepositoriesToRemoteBranch(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Commits all repositories with the given message.
     /// </summary>
-    void CommitAllRepositories(string directory, string commitMessage);
+    ValueTask CommitAllRepositories(string directory, string commitMessage, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Pushes all repositories in the directory using the given credentials.
@@ -93,12 +93,12 @@ public interface ILibGit2SharpUtil
     /// <summary>
     /// Recursively retrieves all directories containing valid Git repositories within the given path.
     /// </summary>
-    List<string> GetAllGitRepositoriesRecursively(string directory);
+    ValueTask<List<string>> GetAllGitRepositoriesRecursively(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves all dirty repositories (with uncommitted changes) under the specified path.
     /// </summary>
-    List<string> GetAllDirtyRepositories(string directory);
+    ValueTask<List<string>> GetAllDirtyRepositories(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Commits and pushes a repository using the given credentials and message.
