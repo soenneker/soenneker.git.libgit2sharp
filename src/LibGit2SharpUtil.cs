@@ -177,7 +177,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     public async ValueTask<string> CloneToTempDirectory(string uri, CancellationToken cancellationToken = default)
     {
-        string dir = await _directoryUtil.CreateTempDirectory(cancellationToken);
+        string dir = await _directoryUtil.CreateTempDirectory(cancellationToken).NoSync();
 
         Clone(uri, dir);
 
