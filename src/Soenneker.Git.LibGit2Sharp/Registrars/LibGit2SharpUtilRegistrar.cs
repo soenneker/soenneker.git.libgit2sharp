@@ -14,6 +14,8 @@ public static class LibGit2SharpUtilRegistrar
     /// <summary>
     /// Adds <see cref="ILibGit2SharpUtil"/> as a singleton service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddLibGit2SharpUtilAsSingleton(this IServiceCollection services)
     {
         services.AddProcessUtilAsSingleton().AddDirectoryUtilAsSingleton().TryAddSingleton<ILibGit2SharpUtil, LibGit2SharpUtil>();
@@ -24,6 +26,8 @@ public static class LibGit2SharpUtilRegistrar
     /// <summary>
     /// Adds <see cref="ILibGit2SharpUtil"/> as a scoped service. <para/>
     /// </summary>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddLibGit2SharpUtilAsScoped(this IServiceCollection services)
     {
         services.AddProcessUtilAsScoped().AddDirectoryUtilAsScoped().TryAddScoped<ILibGit2SharpUtil, LibGit2SharpUtil>();
