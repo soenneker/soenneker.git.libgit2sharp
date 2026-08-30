@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 namespace Soenneker.Git.LibGit2Sharp.Abstract;
 
 /// <summary>
-/// A utility interface for managing Git repositories using LibGit2Sharp and custom operations.
+/// Provides individual and recursive Git repository operations backed by LibGit2Sharp and the Git executable.
 /// </summary>
 public interface ILibGit2SharpUtil
 {
     /// <summary>
     /// Clones a Git repository to the specified directory.
     /// </summary>
-    /// <param name="uri">Receives the normalized absolute URI when parsing succeeds.</param>
-    /// <param name="directory">Directory to read from or write to.</param>
+    /// <param name="uri">The repository URI.</param>
+    /// <param name="directory">The destination directory.</param>
     void Clone(string uri, string directory);
 
     /// <summary>
     /// Clones a Git repository into a temporary directory.
     /// </summary>
-    /// <param name="uri">Receives the normalized absolute URI when parsing succeeds.</param>
+    /// <param name="uri">The repository URI.</param>
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>The path of the temporary directory the repository was cloned into.</returns>
     ValueTask<string> CloneToTempDirectory(string uri, CancellationToken cancellationToken = default);
@@ -41,7 +41,7 @@ public interface ILibGit2SharpUtil
     ValueTask FetchAllGitRepositories(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Switches all repositories in the specified directory to the tracked remote branch (main).
+    /// Checks out the local <c>main</c> branch in every repository beneath the specified directory.
     /// </summary>
     /// <param name="directory">Directory to read from or write to.</param>
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
@@ -67,7 +67,7 @@ public interface ILibGit2SharpUtil
     ValueTask PushAllRepositories(string directory, string token, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Switches the specified repository to the main remote branch (origin/main).
+    /// Checks out the local <c>main</c> branch without discarding conflicting working-tree changes.
     /// </summary>
     /// <param name="directory">Directory to read from or write to.</param>
     void SwitchToRemoteBranch(string directory);
@@ -89,8 +89,8 @@ public interface ILibGit2SharpUtil
     /// <summary>
     /// Executes a raw Git command in the given directory.
     /// </summary>
-    /// <param name="command">Command for the run command operation.</param>
-    /// <param name="directory">Directory to read from or write to.</param>
+    /// <param name="command">Arguments passed directly to the Git executable.</param>
+    /// <param name="directory">The Git process working directory.</param>
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>A task that completes when the run command operation is complete.</returns>
     ValueTask RunCommand(string command, string directory, CancellationToken cancellationToken = default);
@@ -116,7 +116,7 @@ public interface ILibGit2SharpUtil
     /// Pushes commits from the given repository to its remote using provided credentials.
     /// </summary>
     /// <param name="directory">Directory to read from or write to.</param>
-    /// <param name="token">Arbitrary utility token to append.</param>
+    /// <param name="token">The access token used for HTTPS authentication.</param>
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>A task that completes when the push operation is complete.</returns>
     ValueTask Push(string directory, string token, CancellationToken cancellationToken = default);
@@ -139,7 +139,7 @@ public interface ILibGit2SharpUtil
     /// </summary>
     /// <param name="directory">Directory to read from or write to.</param>
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
-    /// <returns>A task whose result is the collection returned by get All Git Repositories Recursively.</returns>
+    /// <returns>Repository root paths, excluding repositories nested inside another discovered repository.</returns>
     ValueTask<List<string>> GetAllGitRepositoriesRecursively(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -147,7 +147,7 @@ public interface ILibGit2SharpUtil
     /// </summary>
     /// <param name="directory">Directory to read from or write to.</param>
     /// <param name="cancellationToken">Token used to cancel the operation.</param>
-    /// <returns>A task whose result is the collection returned by get All Dirty Repositories.</returns>
+    /// <returns>Repository root paths whose index or working tree contains changes.</returns>
     ValueTask<List<string>> GetAllDirtyRepositories(string directory, CancellationToken cancellationToken = default);
 
     /// <summary>

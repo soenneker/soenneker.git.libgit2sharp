@@ -21,7 +21,6 @@ using Soenneker.Utils.Process.Abstract;
 
 namespace Soenneker.Git.LibGit2Sharp;
 
-/// <inheritdoc cref="ILibGit2SharpUtil"/>
 public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 {
     private readonly IConfiguration _config;
@@ -126,11 +125,12 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
             const string trackedBranchName = "main";
             Branch mainBranch = repo.Branches[trackedBranchName];
-            Commands.Checkout(repo, mainBranch, new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force });
+            Commands.Checkout(repo, mainBranch);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not switch to remove branch for directory {dir}", directory);
+            _logger.LogError(e, "Could not switch to the main branch for directory {Directory}", directory);
+            throw;
         }
     }
 
@@ -170,6 +170,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         catch (Exception e)
         {
             _logger.LogError(e, "Could not clone uri ({uri}) into directory ({dir})", uri, directory);
+            throw;
         }
 
         _logger.LogDebug("Finished cloning uri ({uri}) into directory ({dir})", uri, directory);
@@ -231,6 +232,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         catch (Exception e)
         {
             _logger.LogError(e, "Could not pull ({url}) in directory ({directory})", url, directory);
+            throw;
         }
     }
 
@@ -260,6 +262,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         catch (Exception e)
         {
             _logger.LogError(e, "Could not commit for directory ({dir})", directory);
+            throw;
         }
     }
 
@@ -301,6 +304,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         catch (Exception e)
         {
             _logger.LogError(e, "Could not push for directory ({dir})", directory);
+            throw;
         }
     }
 
@@ -354,6 +358,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         catch (Exception e)
         {
             _logger.LogError(e, "Could not fetch for directory ({dir})", directory);
+            throw;
         }
     }
 
