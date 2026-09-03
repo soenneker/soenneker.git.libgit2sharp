@@ -7,10 +7,9 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using LibGit2Sharp;
+using Kevlar;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Polly;
-using Polly.Retry;
 using Soenneker.Extensions.Configuration;
 using Soenneker.Extensions.Task;
 using Soenneker.Extensions.ValueTask;
@@ -28,7 +27,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
     private readonly IDirectoryUtil _directoryUtil;
     private readonly IProcessUtil _processUtil;
 
-    private readonly Lazy<AsyncRetryPolicy> _tooManyRequestsRetryPolicy;
+    private readonly Lazy<Shield> _tooManyRequestsRetryShield;
 
     public LibGit2SharpUtil(IConfiguration config, ILogger<LibGit2SharpUtil> logger, IDirectoryUtil directoryUtil, IProcessUtil processUtil)
     {
@@ -37,24 +36,27 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
         _directoryUtil = directoryUtil;
         _processUtil = processUtil;
 
-        _tooManyRequestsRetryPolicy = new Lazy<AsyncRetryPolicy>(() => Policy.Handle<HttpRequestException>(ex =>
-        {
-            if (ex.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                _logger.LogWarning("429 detected: slowing our requests...");
-                return true;
-            }
+        _tooManyRequestsRetryShield = new Lazy<Shield>(() => Shield.When<HttpRequestException>(ex =>
+                                                                  {
+                                                                      if (ex.StatusCode == HttpStatusCode.TooManyRequests)
+                                                                      {
+                                                                          _logger.LogWarning("429 detected: slowing our requests...");
+                                                                          return true;
+                                                                      }
 
-            return false;
-        })
-                                                                             .WaitAndRetryAsync(retryCount: 5,
-                                                                                 sleepDurationProvider: retryAttempt =>
-                                                                                     TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                                                                                 onRetry: (exception, timeSpan, retryCount, context) =>
-                                                                                 {
-                                                                                     _logger.LogWarning(
-                                                                                         $"Retry {retryCount} after {timeSpan.TotalSeconds} seconds due to: {exception.Message}");
-                                                                                 }));
+                                                                      return false;
+                                                                  })
+                                                              .Retry(options =>
+                                                              {
+                                                                  options.MaxRetries = 5;
+                                                                  options.Backoff = Backoff.Exponential(TimeSpan.FromSeconds(2), jitter: Jitter.None);
+                                                                  options.OnRetry = retry =>
+                                                                  {
+                                                                      _logger.LogWarning("Retry {retryCount} after {delay} seconds due to: {message}",
+                                                                          retry.AttemptNumber + 1, retry.Delay.TotalSeconds, retry.Exception?.Message);
+                                                                      return default;
+                                                                  };
+                                                              }));
     }
 
     // TODO: Probably should break these 'bulk' operations into a separate class
@@ -294,11 +296,11 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
             // Capture the repo in a local variable to avoid disposal issues
             Repository repoToPush = repo;
 
-            await _tooManyRequestsRetryPolicy.Value.ExecuteAsync(() =>
+            await _tooManyRequestsRetryShield.Value.ExecuteAsync(_ =>
             {
                 repoToPush.Network.Push(localMainBranch, options);
-                return Task.CompletedTask;
-            })
+                return default;
+            }, cancellationToken)
                                              .NoSync();
         }
         catch (Exception e)
