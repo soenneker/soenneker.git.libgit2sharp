@@ -20,6 +20,7 @@ using Soenneker.Utils.Process.Abstract;
 
 namespace Soenneker.Git.LibGit2Sharp;
 
+/// <inheritdoc cref="ILibGit2SharpUtil" />
 public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 {
     private readonly IConfiguration _config;
