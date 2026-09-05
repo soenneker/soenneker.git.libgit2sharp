@@ -46,7 +46,7 @@
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" Version="0.32.0" />
         <PackageReference Include="Kevlar" Version="1.1.0" />
-        <PackageReference Include="Soenneker.Extensions.Configuration" Version="4.0.874" />
+        <PackageReference Include="Soenneker.Extensions.Configuration" Version="4.0.875" />
         <PackageReference Include="Soenneker.Utils.Directory" Version="4.0.922" />
         <PackageReference Include="Soenneker.Utils.Process" Version="4.0.1547" />
     </ItemGroup>
