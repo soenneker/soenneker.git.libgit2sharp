@@ -373,7 +373,8 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
         List<string> orderedDirectories = await DirectoryUtil.GetDirectoriesOrderedByLevels(directory, cancellationToken).NoSync();
 
-        orderedDirectories.RemoveAll(c => c.Contains(Path.DirectorySeparatorChar + ".git"));
+        string gitDirectoryMarker = Path.DirectorySeparatorChar + ".git";
+        orderedDirectories.RemoveAll(c => c.Contains(gitDirectoryMarker));
         var index = 0;
 
         while (index < orderedDirectories.Count)
@@ -384,7 +385,8 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
             {
                 finalDirectories.Add(item);
 
-                orderedDirectories.RemoveAll(dir => dir.StartsWith(item + Path.DirectorySeparatorChar));
+                string childPrefix = item + Path.DirectorySeparatorChar;
+                orderedDirectories.RemoveAll(dir => dir.StartsWith(childPrefix));
             }
 
             index++;
