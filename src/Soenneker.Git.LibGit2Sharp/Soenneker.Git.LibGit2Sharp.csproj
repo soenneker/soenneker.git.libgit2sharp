@@ -49,7 +49,7 @@
         <PackageReference Include="Kevlar" Version="1.2.0" />
         <PackageReference Include="Soenneker.Extensions.Configuration" Version="4.0.897" />
         <PackageReference Include="Soenneker.Utils.Directory" Version="4.0.948" />
-        <PackageReference Include="Soenneker.Utils.Process" Version="4.0.1573" />
+        <PackageReference Include="Soenneker.Utils.Process" Version="4.0.1574" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Soenneker.Extensions.ValueTask" Version="4.0.124" />
