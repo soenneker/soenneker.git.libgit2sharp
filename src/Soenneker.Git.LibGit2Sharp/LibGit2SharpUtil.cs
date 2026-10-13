@@ -153,7 +153,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
     {
         _logger.LogInformation("Cloning uri ({uri}) into directory ({dir}) ...", uri, directory);
 
-        var token = _config.GetValueStrict<string>("Git:Token");
+        var token = _config.GetStringStrict("Git:Token");
 
         var fetchOptions = new FetchOptions
         {
@@ -197,9 +197,9 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
     {
         string? url = null;
 
-        name ??= _config.GetValueStrict<string>("Git:Name");
-        email ??= _config.GetValueStrict<string>("Git:Email");
-        var token = _config.GetValueStrict<string>("Git:Token");
+        name ??= _config.GetStringStrict("Git:Name");
+        email ??= _config.GetStringStrict("Git:Email");
+        var token = _config.GetStringStrict("Git:Token");
 
         try
         {
@@ -241,8 +241,8 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     public void Commit(string directory, string message, string? name = null, string? email = null)
     {
-        name ??= _config.GetValueStrict<string>("Git:Name");
-        email ??= _config.GetValueStrict<string>("Git:Email");
+        name ??= _config.GetStringStrict("Git:Name");
+        email ??= _config.GetStringStrict("Git:Email");
 
         try
         {
@@ -333,7 +333,7 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     public void Fetch(string directory)
     {
-        var token = _config.GetValueStrict<string>("Git:Token");
+        var token = _config.GetStringStrict("Git:Token");
 
         var fetchOptions = new FetchOptions
         {
