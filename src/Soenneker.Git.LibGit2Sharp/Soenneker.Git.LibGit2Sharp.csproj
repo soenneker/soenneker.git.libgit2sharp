@@ -48,8 +48,8 @@
         <PackageReference Include="LibGit2Sharp" Version="0.32.0" />
         <PackageReference Include="Kevlar" Version="1.3.0" />
         <PackageReference Include="Soenneker.Extensions.Configuration" Version="11.0.914" />
-        <PackageReference Include="Soenneker.Utils.Directory" Version="11.0.969" />
-        <PackageReference Include="Soenneker.Utils.Process" Version="11.0.1600" />
+        <PackageReference Include="Soenneker.Utils.Directory" Version="11.0.970" />
+        <PackageReference Include="Soenneker.Utils.Process" Version="11.0.1601" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Soenneker.Extensions.ValueTask" Version="4.0.133" />
