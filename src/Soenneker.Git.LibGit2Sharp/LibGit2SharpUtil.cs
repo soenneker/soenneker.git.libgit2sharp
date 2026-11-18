@@ -10,6 +10,7 @@ using LibGit2Sharp;
 using Kevlar;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Soenneker.Extensions.Configuration;
 using Soenneker.Extensions.Task;
 using Soenneker.Extensions.ValueTask;
@@ -176,7 +177,8 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
             throw;
         }
 
-        _logger.LogDebug("Finished cloning uri ({uri}) into directory ({dir})", uri, directory);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("Finished cloning uri ({uri}) into directory ({dir})", uri, directory);
     }
 
     public async ValueTask<string> CloneToTempDirectory(string uri, CancellationToken cancellationToken = default)
@@ -313,7 +315,8 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     public void AddIfNotExists(string directory, string relativeFilePath)
     {
-        _logger.LogDebug("Adding file ({file}) to index if it doesn't exist ...", relativeFilePath);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("Adding file ({file}) to index if it doesn't exist ...", relativeFilePath);
 
         try
         {
@@ -367,7 +370,8 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     public async ValueTask<List<string>> GetAllGitRepositoriesRecursively(string directory, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Getting all git repositories recursively in directory ({directory})...", directory);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("Getting all git repositories recursively in directory ({directory})...", directory);
 
         var finalDirectories = new List<string>();
 
@@ -397,7 +401,8 @@ public sealed class LibGit2SharpUtil : ILibGit2SharpUtil
 
     public async ValueTask<List<string>> GetAllDirtyRepositories(string directory, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Getting all 'dirty' repositories in directory ({directory})...", directory);
+        if (_logger.IsEnabled(LogLevel.Debug))
+            _logger.LogDebug("Getting all 'dirty' repositories in directory ({directory})...", directory);
 
         List<string> allRepos = await GetAllGitRepositoriesRecursively(directory, cancellationToken).NoSync();
 
